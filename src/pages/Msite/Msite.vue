@@ -1,7 +1,7 @@
 <template>
   <div class="msite">
     <!-- 头部 -->
-    <HeaderTop title='河北工程大学新校区'>
+    <HeaderTop :title='address.name'>
         <span class="searcht" slot='left'><i class="iconfont icon-search"></i></span>
         <span class="header_title_text1" slot='right'>登录/注册</span>
     </HeaderTop>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-// import Vue from 'vue'
+import {mapState} from 'vuex'
 import HeaderTop from '@/components/HeaderTop/HeaderTop'
 import ShopList from '@/components/ShopList/ShopList'
 // import 'swiper/swiper-bundle.css'
@@ -72,9 +72,11 @@ import ShopList from '@/components/ShopList/ShopList'
 export default {
   components:{
     HeaderTop,
-    ShopList
-    
+    ShopList  
   },
+  computed:{
+    ...mapState(['address'])
+  }
   // mounted(){
   //   //创建一个Swiper实例对象来实现轮播
   //   var swiper=new Swiper('.swiper-container',{

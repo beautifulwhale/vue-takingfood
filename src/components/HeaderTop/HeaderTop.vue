@@ -3,7 +3,7 @@
       <header class="header">
       <a href="" class="header_title">
         <slot name="left"></slot>
-        <span class="header_title_text">{{title}}</span>
+        <span class="header_title_text" style="margin-left: 15px;">{{title}}</span>
         <slot name="right"></slot>
       </a>
     </header>  
@@ -25,7 +25,7 @@ export default {
   height 40px
   float left
   background-color #02a774
-  text-align center
+  // text-align center
   .header_title
     text-decoration none
     color white
@@ -36,12 +36,12 @@ export default {
     .header_title_text
       float left
       margin-top 13px
-      margin-left 80px
+      margin-left 45%
     .header_title_text1
       float left
-      font-size 14px
+      font-size 10px
       margin-top 18px
-      margin-left 35px
+      margin-left 12px
 </style>
 
 
