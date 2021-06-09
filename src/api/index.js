@@ -1,7 +1,7 @@
 //包含n个接口请求函数   返回的为promise对象
 
 import ajax from '@/api/ajax'
-// const BASE_URL = 'http://localhost:3000'
+// const BASE_URL = 'http://localhost:5000'
 const BASE_URL = '/api'
 
 // [1、根据经纬度获取位置详情](#1根据经纬度获取位置详情)<br/>
@@ -9,7 +9,9 @@ export const reqLocation = (geohash) => ajax(`${BASE_URL}/position/${geohash}`)
 // [2、获取食品分类列表](#2获取食品分类列表)<br/>
 export const reqFoodTypes = () => ajax(BASE_URL+'/index_category')
 // [3、根据经纬度获取商铺列表](#3根据经纬度获取商铺列表)<br/>
-export const reqShops = (longitude,latitude) => {ajax(BASE_URL+'/shops'),{longitude,latitude}}
+export const reqShops = (longitude,latitude) => ajax(BASE_URL+'/shops',{longitude,latitude})
+// export const reqShops = (longitude,latitude) => ajax(`${BASE_URL}/shops/${longitude,latitude}`)
+
 // [4、根据经纬度和关键字搜索商铺列表](#4根据经纬度和关键字搜索商铺列表)<br/>
 export const reqSearchShops = (geohash,keyword) => {
     ajax(BASE_URL+'/search_shops',{geohash,keyword})

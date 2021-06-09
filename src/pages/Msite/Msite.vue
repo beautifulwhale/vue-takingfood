@@ -1,122 +1,142 @@
 <template>
   <div class="msite">
     <!-- 头部 -->
-    <HeaderTop :title='address.name'>
-        <span class="searcht" slot='left'><i class="iconfont icon-search"></i></span>
-        <span class="header_title_text1" slot='right'>登录/注册</span>
+    <HeaderTop :title="address.name">
+      <span class="searcht" slot="left"
+        ><i class="iconfont icon-search"></i
+      ></span>
+      <span class="header_title_text1" slot="right">登录/注册</span>
     </HeaderTop>
     <!-- 食品 -->
-    <div class="swiper-container">
-      <ul class='swiper-wrapper'>
-        <li class="swiper-slide">
-          <img src="./images/home/1.jpg" alt="" />
-          <span class="foodintroduce">甜品优惠</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/2.jpg" alt="" />
-          <span class="foodintroduce">商城福利</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/3.jpg" alt="" />
-          <span class="foodintroduce">面食</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/4.jpg" alt="" />
-          <span class="foodintroduce">新店优惠</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/5.jpg" alt="" />
-          <span class="foodintroduce">准时达</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/6.jpg" alt="" />
-          <span class="foodintroduce">土豪推荐</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/7.jpg" alt="" />
-          <span class="foodintroduce">海鲜食品</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/8.jpg" alt="" />
-          <span class="foodintroduce">粥类饮品</span>
-        </li>
-        <li class="swiper-slide">
-          <img src="./images/home/9.jpg" alt="" />
-          <span class="foodintroduce">快餐汉堡</span>
-        </li>
-      </ul>
-      <!-- Add Pagination -->
-      <div class='swiper-pagination'></div>
-          <!-- 附近推荐 -->
-      <div class="recommend">
-        <p class="headrec">
-          <i class="iconfont icon-xuanxiang">附近商家</i>
-        </p>
-        <ShopList></ShopList>
-       
+    <div class="swiper-container" v-if="foodTypes.length">
+      <div
+        class="swiper-wrapper"
+        v-for="(foodTypes, index) in foodTypesArr"
+        :key="index"
+      >
+        <a
+          class="swiper-slide"
+          v-for="(foodType, index) in foodTypes"
+          :key="index"
+        >
+          <img :src="baseImgUrl + foodType.image_url" class="foodTypeImg" />
+          <span class="foodintroduce">{{ foodType.title }}</span>
+        </a>
       </div>
+      <!-- Add Pagination -->
+      <div class="swiper-pagination"></div>
     </div>
-  
+    <img src='./images/msite_back.svg' alt='back' v-else>
+    <!-- 附近推荐 -->
+    <div class="recommend">
+      <p class="headrec">
+        <i class="iconfont icon-xuanxiang">附近商家</i>
+      </p>
+      <ShopList></ShopList>
+    </div>
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex'
-import HeaderTop from '@/components/HeaderTop/HeaderTop'
-import ShopList from '@/components/ShopList/ShopList'
-// import 'swiper/swiper-bundle.css'
-// import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
- 
-
-
+import { mapState } from "vuex";
+import HeaderTop from "@/components/HeaderTop/HeaderTop";
+import ShopList from "@/components/ShopList/ShopList";
+// import { swiper, swiperSlide } from "vue-awesome-swiper";
+// import "swiper/dist/css/swiper.css";
 export default {
-  components:{
-    HeaderTop,
-    ShopList  
+  data() {
+    return {
+      baseImgUrl: "https://fuss10.elemecdn.com"
+    };
   },
-  computed:{
-    ...mapState(['address'])
+  components: {
+    HeaderTop,
+    ShopList
+  },
+  computed: {
+    ...mapState(["address", "foodTypes"]),
+    foodTypesArr() {
+      const { foodTypes } = this;
+      //定义一个二维数组
+      const arr = [];
+      let minArr = [];
+      foodTypes.forEach(food => {
+        if (minArr.length === 0) {
+          arr.push(minArr);
+        }
+        if (minArr.length === 8) {
+          minArr = [];
+        }
+        minArr.push(food);
+      });
+      return arr;
+    }
+  },
+  mounted() {
+    this.$store.dispatch("getFoodTypes");   
+  },
+  watch:{
+    
+    foodTypes(value){
+      //foodTypes数组中有数据了，在异步更新界面之前显示
+      //这个方法并不能实时性的的出现轮播  可能并不是100毫秒
+      // setTimeout(() => {
+      //   // 创建一个Swiper实例对象来实现轮播
+      //   new Swiper('.swiper-container',{
+      //     loop:true,  //可以实现轮播
+      //     // 如果需要分页器
+      //     pagination:{
+      //       el:'.swiper-pagination'
+      //     }
+      //   })       
+      // }, 100);
+      //一旦界面更新立即调用
+      // this.$nextTick(() =>{
+      //    // 创建一个Swiper实例对象来实现轮播
+      //   new Swiper('.swiper-container',{
+      //     loop:true,  //可以实现轮播
+      //     // 如果需要分页器
+      //     pagination:{
+      //       el:'.swiper-pagination'
+      //     }
+      //   })
+      // })
+    }
+
   }
-  // mounted(){
-  //   //创建一个Swiper实例对象来实现轮播
-  //   var swiper=new Swiper('.swiper-container',{
-  //     loop:true,  //可以实现轮播
-  //     // 如果需要分页器
-  //     pagination:{
-  //       el:'.swiper-pagination'
-  //     }
-  //   })
-  // }
 };
 </script>
 
 <style lang="stylus" ref="stylesheet/stylus">
 .swiper-container
-  width 100%
-  height 1000px
+  width 390px
+  height 100px
   .swiper-slide
     float left
-    width 30%
-    height 100px
-    margin-top 10px
-    margin-left 13px
+    width 60px
+    margin-top 15px
+    margin-left 30px
+    .foodTypeImg
+      width 50px
+      height 50px
     .foodintroduce
       float left
-      font-size 15px
-      margin-left 20px
+      color black
+      font-size 10px
+      margin-top 10px
+      margin-left 2px
 .headrec
   float left
-  margin-top 20px
+  margin-top 10px
   // margin-left 10px
   border-top 1px solid rgb(192, 190, 190)
   height 15px
   width 100%
+  margin-bottom 20px
   .iconfont
     color rgb(192, 190, 190)
     font-size 14px
     float left
     margin-top 10px
     margin-left 10px
-
-
 </style>

@@ -28,7 +28,7 @@ export default {
   async getShops({ commit, state }) {
     const { latitude, longitude } = state;
     const result = await reqShops(longitude, latitude);
-    if (result.code === 0) {
+    if (result.code == 0) {
       const shops = result.data;
       commit(RECEIVE_SHOPS, { shops });
     }

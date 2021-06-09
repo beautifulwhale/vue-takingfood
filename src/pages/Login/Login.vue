@@ -1,99 +1,395 @@
+<!--  -->
 <template>
-  <div class="login">
-    <p class="jiantou">
-      <i class="iconfont icon-jiantou2" @click="$router.back()"></i>
-    </p>
-    <div class="logincontent">
-      <span class="title">硅谷外卖</span>
-      <p class="loginstyle">
-        <span class="message">短信登录</span>
-        <span class="password">密码登录</span>
-      </p>
-      <input type="text" placeholder="手机号" class="phonenum"/>
-      <input type="text" placeholder="验证码" class="number" />
-      <p class="ps">
-        温馨提示：未注册的硅谷外卖账号的手机号,登录时将自动注册,且代表同意
-        <span class="xieyi">《用户服务协议》</span>
-      </p>
-      <button class="btn">登录</button>
-      <span class="aboutus">关于我们</span>
+  <section class="loginContainer">
+    <div class="loginInner">
+      <div class="login_header">
+        <h2 class="login_logo">硅谷外卖</h2>
+        <div class="login_header_title">
+          <!-- 点击状态下为true，添加显示的类名，显示短信登录，为false显示密码登录，与表单绑定 -->
+          <a
+            href="javascript:;"
+            :class="{ on: loginWay }"
+            @click="loginWay = true"
+            >短信登录</a
+          >
+          <a
+            href="javascript:;"
+            :class="{ on: !loginWay }"
+            @click="loginWay = false"
+            >密码登录</a
+          >
+        </div>
+      </div>
+      <div class="login_content">
+        <form @submit.prevent='login'>
+          <!-- 短信登录 -->
+          <div :class="{ on: loginWay }">
+            <section class="login_message">
+              <input
+                type="tel"
+                maxlength="11"
+                placeholder="手机号"
+                v-model="phone"
+              />
+              <!-- 计算属性验证输入的手机号是否正确，正确则能点击获取验证码，添加显示状态。 -->
+              <!-- 表单里面的button默认行为是提交表单，要取消默认行为 -->
+              <!-- 三目运算，模板字符串，如果时间大于0则显示当前秒数 -->
+              <button
+                :disabled="!rightPhone"
+                class="get_verification"
+                :class="{ right_phone: rightPhone }"
+                @click.prevent="getCode"
+              >
+                {{ computeTime > 0 ? `倒计时(${computeTime}s)` : "获取验证码" }}
+              </button>
+            </section>
+            <section class="login_verification">
+              <input
+                type="tel"
+                maxlength="8"
+                placeholder="验证码"
+                v-model="code"
+              />
+            </section>
+            <section class="login_hint">
+              温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
+              <a href="javascript:;">《用户服务协议》</a>
+            </section>
+          </div>
+          <!-- 密码登录 -->
+          <div :class="{ on: !loginWay }">
+            <section>
+              <section class="login_message">
+                <input
+                  type="tel"
+                  maxlength="11"
+                  placeholder="手机/邮箱/用户名"
+                  v-model="name"
+                />
+              </section>
+              <section class="login_verification">
+                <!-- 切换密码显示隐藏状态，改变按钮选择状态，默认为隐藏 -->
+                <input
+                  type="text"
+                  maxlength="8"
+                  placeholder="密码"
+                  v-if="showPwd"
+                  v-model="pwd"
+                />
+                <input
+                  type="password"
+                  maxlength="8"
+                  placeholder="密码"
+                  v-model="pwd"
+                  v-else
+                />
+                <div
+                  class="switch_button"
+                  :class="showPwd ? 'on' : 'off'"
+                  @click="showPwd = !showPwd"
+                >
+                  <div class="switch_circle" :class="{ right: showPwd }"></div>
+                  <span class="switch_text">{{ showPwd ? "abc" : "..." }}</span>
+                </div>
+              </section>
+              <section class="login_message">
+                <input
+                  type="text"
+                  maxlength="11"
+                  placeholder="验证码"
+                  v-model="captcha"
+                />
+                <!-- <img class="get_verification" src="./images/captcha.svg" alt="captcha"> -->
+                <img class="get_verification" alt="captcha" />
+              </section>
+            </section>
+          </div>
+          <button class="login_submit">登录</button>
+        </form>
+        <a href="javascript:;" class="about_us">关于我们</a>
+      </div>
+      <!-- 返回键 -->
+      <a href="javascript:" class="go_back" @click="$router.back()">
+        <i class="iconfont icon-arrow-left"></i>
+      </a>
     </div>
-  </div>
+    <AlertTip
+      :alertText="alertText"
+      @closeTip="closeTip"
+      v-show="alertShow"
+    ></AlertTip>
+  </section>
 </template>
 
 <script>
-export default {};
+import AlertTip from "@/components/AlertTip/AlertTip";
+export default {
+  data() {
+    return {
+      loginWay: true, // true代表短信登陆, false代表密码
+      phone: "", //手机号
+      computeTime: 0, //进行倒计时
+      showPwd: false, //是否展示密码
+      pwd: "", //验证码
+      alertText: "", //警告框内容
+      alertShow: false, //是否显示警告框
+      name: "", //用户名
+      code: "", //验证码
+      captcha: "" //图形验证码
+    };
+  },
+  computed: {
+    //使用计算属性测试输入的手机号是否正确，正确则显示类名
+    rightPhone() {
+      return /^1\d{10}$/.test(this.phone);
+    }
+  },
+  methods: {
+    getCode() {
+      //如果没有计时开始
+      if (!this.computeTime) {
+        //启动定时器
+        this.computeTime = 30;
+        let timer = setInterval(() => {
+          this.computeTime--;
+          if (this.computeTime <= 0) {
+            clearInterval(timer);
+          }
+        }, 1000);
+      }
+    },
+    //显示警告提示框
+    showAlert(alertText) {
+      this.alertShow = true;
+      this.alertText = alertText;
+    },
+    //检查输入内容是否合法 实现异步登录
+    login() {
+      //短信登录
+      if (this.loginWay) {
+        const {phone,code,rightPhone} = this;
+        //手机号不正确
+        if (!this.rightPhone) {
+          this.showAlert("手机号不正确");
+        }
+        //验证码不正确
+        else if (!/^\d{6}$/.test(code)) {
+          this.showAlert("验证码必须是6位");
+        }
+      } else {
+        const {name,pwd,captcha}=this
+        //用户名必须指定
+        if (!this.name) {
+          this.showAlert("用户名必须指定");
+          //密码必须指定
+        } else if (!this.pwd) {
+          this.showAlert("密码必须指定");
+          //图形验证码必须指定
+        } else if (!this.captcha) {
+          this.showAlert("图形验证码必须指定");
+        }
+      }
+    },
+    closeTip(){
+       this.alertShow = false;
+      this.alertText = '';
+    }
+  },
+  components: {
+    AlertTip
+  }
+};
 </script>
+<style lang="stylus" rel="stylesheet/stylus">
+@import '../../common/stylus/mixins.styl';
 
-<style lang="stylus" scoped>
-.login
-    width 100%
-    .jiantou
-        float left
-        margin 0px 0px
-    .logincontent
-        width 100%
-        .title
-            color #02a774
-            font-size 37px
-            font-weight bold
-            float left
-            margin-top 50px
-            margin-left 100px
-        .loginstyle
-            float left
-            width 100%
-            margin-top 35px
-            margin-left 120px
-            .message
-                color #02a774
-                border-bottom  4px solid #02a774
-                float left
-                padding-bottom 3px
-                margin-right 20px 
-            .password
-                color #02a774
-                border-bottom  4px solid #02a774
-                float left
-                padding-bottom 3px
-        .phonenum
-            float left
-            width 300px
-            height 35px
-            margin-top 8px
-            margin-left 50px
-            border-radius 5px
-            border-color rgb(196, 197, 196) 
-        .number
-            float left
-            width 300px
-            height 35px
-            margin-top 8px
-            margin-left 50px
-            border-radius 5px
-            border-color rgb(196, 197, 196) 
-            // border-top-color  rgb(196, 197, 196)
-        .ps
-            float left
-            font-size 10px
-            color rgb(196, 197, 196) 
-            margin 10px 50px
-            .xieyi
-                color #02a774
-        .btn
-            float left
-            width 300px
-            height 35px
-            margin-left 50px
-            margin-top 20px
-            color white
-            background rgb(47, 233, 47)
-            border rgb(47, 233, 47)
-            border-radius 5px
-        .aboutus
-            color rgb(136, 136, 136)
-            font-size 13px
-            float left
-            margin-left 170px
-            margin-top 20px
+.loginContainer {
+  width: 100%;
+  height: 620px;
+  background: #fff;
+
+  .loginInner {
+    padding-top: 60px;
+    width: 80%;
+    margin: 0 auto;
+
+    .login_header {
+      .login_logo {
+        font-size: 40px;
+        font-weight: bold;
+        color: #02a774;
+        text-align: center;
+      }
+
+      .login_header_title {
+        padding-top: 40px;
+        text-align: center;
+
+        >a {
+          color: #333;
+          font-size: 14px;
+          padding-bottom: 4px;
+
+          &:first-child {
+            margin-right: 40px;
+          }
+
+          &.on {
+            color: #02a774;
+            font-weight: 700;
+            border-bottom: 2px solid #02a774;
+          }
+        }
+      }
+    }
+
+    .login_content {
+      >form {
+        >div {
+          display: none;
+
+          &.on {
+            display: block;
+          }
+
+          input {
+            width: 100%;
+            height: 100%;
+            padding-left: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: 0;
+            font: 400 14px Arial;
+
+            &:focus {
+              border: 1px solid #02a774;
+            }
+          }
+
+          .login_message {
+            position: relative;
+            margin-top: 16px;
+            height: 48px;
+            font-size: 14px;
+            background: #fff;
+
+            .get_verification {
+              position: absolute;
+              top: 45%;
+              right: 10px;
+              transform: translateY(-50%);
+              border: 0;
+              color: #ccc;
+              font-size: 14px;
+              background: transparent;
+              &.right_phone {
+                color: black;
+              }
+            }
+          }
+
+          .login_verification {
+            position: relative;
+            margin-top: 16px;
+            height: 48px;
+            font-size: 14px;
+            background: #fff;
+
+            .switch_button {
+              font-size: 12px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              transition: background-color 0.3s, border-color 0.3s;
+              padding: 0 6px;
+              width: 30px;
+              height: 16px;
+              line-height: 16px;
+              color: #fff;
+              position: absolute;
+              top: 50%;
+              right: 10px;
+              transform: translateY(-50%);
+
+              &.off {
+                background: #fff;
+
+                .switch_text {
+                  float: right;
+                  color: #ddd;
+                }
+              }
+
+              &.on {
+                background: #02a774;
+              }
+
+              >.switch_circle {
+                position: absolute;
+                top: -1px;
+                left: -1px;
+                width: 16px;
+                height: 16px;
+                border: 1px solid #ddd;
+                border-radius: 50%;
+                background: #fff;
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s;
+                &.right {
+                  transform: translateX(30px);
+                }
+              }
+            }
+          }
+
+          .login_hint {
+            margin-top: 12px;
+            color: #999;
+            font-size: 14px;
+            line-height: 20px;
+
+            >a {
+              color: #02a774;
+            }
+          }
+        }
+
+        .login_submit {
+          display: block;
+          width: 100%;
+          height: 42px;
+          margin-top: 30px;
+          border-radius: 4px;
+          background: #4cd96f;
+          color: #fff;
+          text-align: center;
+          font-size: 16px;
+          line-height: 42px;
+          border: 0;
+        }
+      }
+
+      .about_us {
+        display: block;
+        font-size: 12px;
+        margin-top: 20px;
+        text-align: center;
+        color: #999;
+      }
+    }
+
+    .go_back {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 30px;
+      height: 30px;
+
+      >.iconfont {
+        font-size: 20px;
+        color: #999;
+      }
+    }
+  }
+}
 </style>
