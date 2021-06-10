@@ -2,10 +2,17 @@
   <div class="msite">
     <!-- 头部 -->
     <HeaderTop :title="address.name">
-      <span class="searcht" slot="left"
+      <router-link class="searcht" slot="left" to="/search"
         ><i class="iconfont icon-search"></i
-      ></span>
-      <span class="header_title_text1" slot="right">登录/注册</span>
+      ></router-link>
+      <router-link class="header_title_text1" style='color:white' :to="userInfo._id ? '/userinfo' : 'login'" slot="right">
+        <span  v-if="!userInfo._id"
+          >登录/注册</span
+        >
+        <span class="header_title_text1"  v-else
+          ><i class="iconfont icon-gerendenglu"></i
+        ></span>
+      </router-link>
     </HeaderTop>
     <!-- 食品 -->
     <div class="swiper-container" v-if="foodTypes.length">
@@ -26,7 +33,7 @@
       <!-- Add Pagination -->
       <div class="swiper-pagination"></div>
     </div>
-    <img src='./images/msite_back.svg' alt='back' v-else>
+    <img src="./images/msite_back.svg" alt="back" v-else />
     <!-- 附近推荐 -->
     <div class="recommend">
       <p class="headrec">
@@ -54,7 +61,7 @@ export default {
     ShopList
   },
   computed: {
-    ...mapState(["address", "foodTypes"]),
+    ...mapState(["address", "foodTypes", "userInfo"]),
     foodTypesArr() {
       const { foodTypes } = this;
       //定义一个二维数组
@@ -73,11 +80,10 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("getFoodTypes");   
+    this.$store.dispatch("getFoodTypes");
   },
-  watch:{
-    
-    foodTypes(value){
+  watch: {
+    foodTypes(value) {
       //foodTypes数组中有数据了，在异步更新界面之前显示
       //这个方法并不能实时性的的出现轮播  可能并不是100毫秒
       // setTimeout(() => {
@@ -88,7 +94,7 @@ export default {
       //     pagination:{
       //       el:'.swiper-pagination'
       //     }
-      //   })       
+      //   })
       // }, 100);
       //一旦界面更新立即调用
       // this.$nextTick(() =>{
@@ -102,7 +108,6 @@ export default {
       //   })
       // })
     }
-
   }
 };
 </script>
@@ -125,6 +130,8 @@ export default {
       font-size 10px
       margin-top 10px
       margin-left 2px
+.searcht
+  color white
 .headrec
   float left
   margin-top 10px
@@ -134,7 +141,7 @@ export default {
   width 100%
   margin-bottom 20px
   .iconfont
-    color rgb(192, 190, 190)
+    color white
     font-size 14px
     float left
     margin-top 10px

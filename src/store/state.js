@@ -3,5 +3,6 @@ export default{
     longitude: "116.36867",
     address:{},
     foodTypes:[],
-    shops:[]
+    shops:[],
+    userInfo:{} //用户信息
 }

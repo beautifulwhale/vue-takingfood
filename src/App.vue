@@ -22,9 +22,10 @@ export default {
   mounted(){
     // this.$store.dispatch('getAddress');
     this.getAddress();
+    this.getUserMsg()
   },
   methods:{
-    ...mapActions(['getAddress'])
+    ...mapActions(['getAddress','getUserMsg'])
   }
 }
 </script>

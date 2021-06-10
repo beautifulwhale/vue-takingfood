@@ -39,9 +39,14 @@ export default {
       margin-left 45%
     .header_title_text1
       float left
-      font-size 10px
+      font-size 12px
       margin-top 18px
-      margin-left 12px
+      margin-left 15px
+      .iconfont
+        float left
+        margin-top -20px
+        margin-left 20px
+        font-size 20px
 </style>
 
 

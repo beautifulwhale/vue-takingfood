@@ -1,38 +1,31 @@
 <template>
   <div class="profile">
-    <HeaderTop title='我的'></HeaderTop>
+    <HeaderTop title="我的"></HeaderTop>
     <div class="login">
       <!-- 登录注册 -->
-      <router-link to="/login" class="login_register">
-         <div class="photo">
-          <i class="iconfont icon-wode-copy"></i>
-        </div>
-        <div class="text_phone">
-          <span class="text_login">
-            <span>登录/注册</span>
-            <i class="iconfont icon-jiantou"></i
-          ></span>
-
-          <span class="phonenum"
-            ><i class="iconfont icon-shouji">暂无绑定手机号</i></span
-          >
-        </div>
-      </router-link>
-      <!-- <div class="login_register">
+      <router-link
+        :to="userInfo._id ? '/userinfo' : '/login'"
+        class="login_register"
+      >
         <div class="photo">
           <i class="iconfont icon-wode-copy"></i>
         </div>
         <div class="text_phone">
           <span class="text_login">
-            <span>登录/注册</span>
+            <span v-if="!userInfo.phone">{{
+              userInfo.name || "登录/注册"
+            }}</span>
             <i class="iconfont icon-jiantou"></i
           ></span>
 
           <span class="phonenum"
-            ><i class="iconfont icon-shouji">暂无绑定手机号</i></span
+            ><i class="iconfont icon-shouji">{{
+              userInfo.phone || "暂无绑定手机号"
+            }}</i></span
           >
         </div>
-      </div> -->
+      </router-link>
+
       <!-- 账户余额 -->
       <div class="count">
         <ul>
@@ -85,21 +78,41 @@
         </li>
       </ul>
     </div>
+    <mt-button type="danger" @click="logout">退出登录</mt-button>
   </div>
 </template>
 
 <script>
-import HeaderTop from '@/components/HeaderTop/HeaderTop'
+import HeaderTop from "@/components/HeaderTop/HeaderTop";
+import { mapState } from "vuex";
+import { MessageBox,Toast } from "mint-ui";
+
 export default {
-  components:{
+  components: {
     HeaderTop
+  },
+  computed: {
+    ...mapState(["userInfo"])
+  },
+  methods: {
+    logout() {
+      MessageBox.confirm("确定退出?").then(
+        //请求退出
+        action => {
+          this.$store.dispatch("logout");
+          Toast('退出成功');
+        },
+        action => {
+          console.log("点击了取消");
+        }
+      );
+    }
   }
 };
 </script>
 
 <style lang="stylus" ref="stylesheet/stylus">
 @import "../../common/stylus/mixins.styl"
-
 .login
   float left
   margin-top 1px
@@ -109,6 +122,7 @@ export default {
   .login_register
     height 100px
     float left
+    width 100%
     background-color #02a774
     .photo
       float left
@@ -130,8 +144,8 @@ export default {
         float left
         margin-top 32px
       .iconfont
-        color white 
-        margin-left  210px  
+        color white
+        margin-left  210px
       .phonenum
         color white
         float left

@@ -44,10 +44,12 @@ top-border-1px($color)
 
 
 //根据像素比来使用2x图3x图
-@mixin bg-image($ url ) {
-     background-image :  url ($ url  +  "@2x.png" );
+// @mixin 是混合写法，加上不生效
+// 原：url ( $url  +  "@2x.png" ) url和括号分开了，解析后背景图片会识别不出来，格式错误，把'url'和'('中间的空格去掉就识别出来了
+bg-image($url) {
+     background-image : url( $url  +  "@2x.png" );
      @media (-webkit-min-device-pixel-ratio:  3 ),(min-device-pixel-ratio:  3 ) {
-         background-image :  url ($ url  +  "@3x.png" );
+         background-image : url( $url  +  "@3x.png" );
      }
 }
 // 清除浮动
