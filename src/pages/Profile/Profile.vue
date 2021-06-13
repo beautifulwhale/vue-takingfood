@@ -78,7 +78,7 @@
         </li>
       </ul>
     </div>
-    <mt-button type="danger" @click="logout">退出登录</mt-button>
+    <mt-button type="danger" @click="logout" style='width:100%;margin-top:20px' v-if="userInfo._id">退出登录</mt-button>
   </div>
 </template>
 
