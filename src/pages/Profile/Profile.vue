@@ -18,7 +18,7 @@
             <i class="iconfont icon-jiantou"></i
           ></span>
 
-          <span class="phonenum"
+          <span class="phonenum" 
             ><i class="iconfont icon-shouji">{{
               userInfo.phone || "暂无绑定手机号"
             }}</i></span
@@ -126,12 +126,12 @@ export default {
     background-color #02a774
     .photo
       float left
-      margin 30px 10px
+      margin 20px 10px
       width 50px
       height 50px
       border-radius 50%
       background  grey
-      .iconfont
+      .icon-wode-copy
         width 30px
         height 100px
         float left
@@ -143,14 +143,13 @@ export default {
         color white
         float left
         margin-top 32px
-      .iconfont
+      .icon-jiantou
         color white
-        margin-left  210px
+        margin-left  200px
       .phonenum
         color white
         float left
         margin-top 10px
-        margin-left -210px
 .count
   height 200px
   width 100%

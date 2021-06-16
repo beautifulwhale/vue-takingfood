@@ -1,3 +1,4 @@
+import Vue from "vue";
 import {
   RECEIVE_ADDRESS,
   RECEIVE_FOODTYPES,
@@ -6,7 +7,10 @@ import {
   RESET_USERINFO,
   RECEIVE_INFO,
   RECEIVE_RATINGS,
-  RECEIVE_GOODS
+  RECEIVE_GOODS,
+  INCREASE_FOOD_COUNT,
+  DECREASE_FOOD_COUNT,
+  CLEAR_CART
 } from "./mutation-type.js";
 export default {
   [RECEIVE_ADDRESS](state, { address }) {
@@ -33,5 +37,30 @@ export default {
   },
   [RECEIVE_GOODS](state, { goods }) {
     state.goods = goods;
+  },
+  //购物车加食物
+  [INCREASE_FOOD_COUNT](state, { food }) {
+    if (!food.count) {
+      Vue.set(food, "count", 1);
+      //第一次添加食物到购物车的时候
+      state.cartFoods.push(food);
+    } else {
+      food.count++;
+    }
+  },
+  [DECREASE_FOOD_COUNT](state, { food }) {
+    if (food.count) {
+      food.count--;
+      //当食物没有的时候清除购物车
+      if (state.cartFoods === 0) {
+        state.cartFoods.splice(state.cartFoods.indexOf(food), 1);
+      }
+    }
+  },
+  [CLEAR_CART](state) {
+    //1.清空购物车food中的count
+    state.cartFoods.forEach(food => (food.count = 0));
+    //2.清空购物车中的所有项目
+    state.cartFoods = [];
   }
 };

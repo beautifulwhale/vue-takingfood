@@ -1,6 +1,6 @@
 <template>
   <div class="shop-header">
-    <nav class="shop-nav" :style="{ backgroundImage: `url(${info.bg_image})` }">
+    <nav class="shop-nav" :style="{ backgroundImage: `url(${info.bgImg})` }">
       <a class="back">
         <i
           class="iconfont icon-jiantou2"
@@ -90,7 +90,7 @@
             日创立“嘉和一品”品牌至今
           </div>
           <div class="mask-footer" @click="toggleShopShow">
-            <span class="iconfont icon-Close"></span>
+            <span class="iconfont icon-iconclose"></span>
           </div>
         </div>
         <div class="brief-modal-cover"></div>
@@ -115,7 +115,7 @@
             </li>
           </ul>
           <div class="activity-sheet-close" @click="toggleSupportShow">
-            <span class="iconfont icon-Close"></span>
+            <span class="iconfont icon-iconclose" ></span>
           </div>
         </div>
         <div class="activity-sheet-cover"></div>
@@ -138,10 +138,10 @@ export default {
   },
   methods: {
     toggleShopShow() {
-      this.shopShow = !shopShow;
+      this.shopShow = !this.shopShow;
     },
     toggleSupportShow() {
-      this.supportShow = !supportShow;
+      this.supportShow = !this.supportShow;
     }
   }
 };

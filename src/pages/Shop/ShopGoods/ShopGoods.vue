@@ -1,56 +1,157 @@
 <template>
-  <div class="goods">
-    <div class="menu-wrapper" ref="menuWrapper">
-      <ul ref="menusUl">
-        <!-- current -->
-        <li class="menu-item">
-          <span class="text bottom-border-1px">
-            <img class="icon" src="" />
-            名字
-          </span>
-        </li>
-      </ul>
+  <div>
+    <div class="goods">
+      <div class="menu-wrapper">
+        <ul ref="menusUl">
+          <!-- current -->
+          <li
+            class="menu-item"
+            v-for="(good, index) in goods"
+            :key="index"
+            :class="{ current: index === currentIndex }"
+            @click="menuItem(index)"
+          >
+            <span class="text bottom-border-1px">
+              <img class="icon" :src="good.icon" v-if="good.icon" />
+              {{ good.name }}
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="foods-wrapper">
+        <ul ref="foodsUl">
+          <li
+            class="food-list-hook"
+            v-for="(good, index) in goods"
+            :key="index"
+            
+          >
+            <h1 class="title">{{ good.name }}</h1>
+            <ul>
+              <li
+                class="food-item bottom-border-1px"
+                v-for="(food, index) in good.foods"
+                :key="index"
+                @click='showFood(food)'
+              >
+                <div class="icon">
+                  <img width="57" height="57" :src="food.icon" />
+                </div>
+                <div class="content">
+                  <h2 class="name">{{ food.name }}</h2>
+                  <p class="desc">{{ food.description }}</p>
+                  <div class="extra">
+                    <span class="count">月售{{ food.sellCount }}份</span>
+                    <span>好评率{{ food.rating }}%</span>
+                  </div>
+                  <div class="price">
+                    <span class="now">￥{{ food.price }}</span>
+                    <span class="old" v-if="food.oldPrice"
+                      >￥{{ food.oldPrice }}</span
+                    >
+                  </div>
+                  <div class="cartcontrol-wrapper">
+                    <CartControl :food="food"></CartControl>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      <ShopCart></ShopCart>
+      </div>
     </div>
-    <div class="foods-wrapper" ref="foodsWrapper">
-      <ul ref="foodsUl">
-        <li class="food-list-hook" v-for="(good, index) in goods" :key="index">
-          <h1 class="title">{{ good.name }}</h1>
-          <ul>
-            <li class="food-item bottom-border-1px">
-              <div class="icon">
-                <img width="57" height="57" src="" />
-              </div>
-              <div class="content">
-                <h2 class="name">名字</h2>
-                <p class="desc">描述</p>
-                <div class="extra">
-                  <span class="count">月售100份</span>
-                  <span>好评率 100%</span>
-                </div>
-                <div class="price">
-                  <span class="now">￥54</span>
-                  <span class="old">￥77</span>
-                </div>
-                <div class="cartcontrol-wrapper">
-                  CartControl
-                </div>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+    <Food :food="food" ref="food"></Food>
   </div>
 </template>
 
 <script>
+import BScroll from "better-scroll";
 import { mapState } from "vuex";
+import CartControl from "@/components/CartControl/CartControl";
+import Food from "@/components/Food/Food";
+import ShopCart from '@/components/ShopCart/ShopCart'
 export default {
+  data() {
+    return {
+      scorllY: 0, //右侧滑动的Y轴坐标(滑动过程中实时变化)
+      tops: [], //所有右侧分类li的top值组成的数组(列表第一次显示之后就不再变化)
+      food: {}
+    };
+  },
   computed: {
-    ...mapState(["goods"])
+    ...mapState(["goods"]),
+    currentIndex() {
+      const { scorllY, tops } = this;
+      //根据条件产生结果
+      const index = tops.findIndex((top, index) => {
+        //scorllY要大于等于当前top  并且小于下一个top
+        return scorllY >= top && scorllY < tops[index + 1];
+      });
+      //返回结果
+      return index;
+    }
   },
   mounted() {
-    this.$store.dispatch("getShopGoods");
+    this.$store.dispatch("getShopGoods", () => {
+      //等待列表加载完之后在执行
+      this.$nextTick(() => {
+        this._initScorll();
+        this._initTops();
+      });
+    });
+  },
+  methods: {
+    _initScorll() {
+      new BScroll(".menu-wrapper", {
+        click: true
+      });
+      this.foodsScroll = new BScroll(".foods-wrapper", {
+        probeType: 2
+      });
+      //给右侧列表绑定scorll监听
+      this.foodsScroll.on("scroll", ({ x, y }) => {
+        this.scorllY = Math.abs(y);
+      });
+      //给右侧列表绑定scorll结束的监听
+      this.foodsScroll.on("scrollEnd", ({ x, y }) => {
+        this.scorllY = Math.abs(y);
+      });
+    },
+    _initTops() {
+      //1.初始化tops
+      let tops = [];
+      let top = 0;
+      tops.push(top);
+      //2.收集tops放到数组中
+      const lis = this.$refs.foodsUl.getElementsByClassName("food-list-hook");
+      Array.prototype.slice.call(lis).forEach(li => {
+        top += li.clientHeight;
+        tops.push(top);
+      });
+      //3.更新数据
+      this.tops = tops;
+    },
+    menuItem(index) {
+      //得到目标位置的scrollY
+      const scorllY = this.tops[index];
+      //立即更新
+      this.scorllY = scorllY;
+      //平滑滑动右侧列表
+      this.foodsScroll.scrollTo(0, -scorllY, 300);
+    },
+    showFood(food){
+      //更新food
+      this.food = food;
+      //显示food(在父组件中调用子组件对象的方法)
+      this.$refs.food.toggleShowFood()
+
+    }
+  },
+  components: {
+    CartControl,
+    Food,
+    ShopCart
   }
 };
 </script>
