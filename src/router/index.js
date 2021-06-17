@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Msite from '@/pages/Msite/Msite'
-import Order from '@/pages/Order/Order'
-import Profile from '@/pages/Profile/Profile'
-import Search from '@/pages/Search/Search'
+// import Msite from '@/pages/Msite/Msite'
+// import Order from '@/pages/Order/Order'
+// import Profile from '@/pages/Profile/Profile'
+// import Search from '@/pages/Search/Search'
+const Msite = () => import('@/pages/Msite/Msite')
+const Order = () => import('@/pages/Order/Order')
+const Profile = () => import('@/pages/Profile/Profile')
+const Search = () => import('@/pages/Search/Search')
 import Login from '@/pages/Login/Login'
 import ShopGoods from '@/pages/Shop/ShopGoods/ShopGoods'
 import ShopInfo from '@/pages/Shop/ShopInfo/ShopInfo'
@@ -73,8 +77,10 @@ export default new VueRouter( {
     ]
 }
 )
-
-
+const VueRouterPush =VueRouter.prototype.push
+VueRouter.prototype.push = function push (to) {
+  return VueRouterPush.call(this, to).catch(err => err)
+}
 
 
 

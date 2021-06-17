@@ -13,6 +13,9 @@ export const DECREASE_FOOD_COUNT = 'decrease_food_count' // 减少购物车食�
 
 export const CLEAR_CART = 'clear_cart' // 减少购物车食物数量
 
+export const RECEIVE_SEARCH_SHOPS = 'receive_search_shops' 
+
+
 
 
 

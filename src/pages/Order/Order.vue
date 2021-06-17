@@ -1,21 +1,22 @@
 <template>
   <div>
     <section class="order">
-      
-      <HeaderTop title='订单列表'/>
+      <HeaderTop title="订单列表" />
       <section class="order_no_login">
         <img src="./images/person.png" alt="" />
         <h3>登陆后查看外卖订单</h3>
-        <button>立即登录</button>
+        <router-link to="/login">
+          <button>立即登录</button>
+        </router-link>
       </section>
     </section>
   </div>
 </template>
 
 <script>
-import HeaderTop from '@/components/HeaderTop/HeaderTop'
+import HeaderTop from "@/components/HeaderTop/HeaderTop";
 export default {
-  components:{
+  components: {
     HeaderTop
   }
 };
@@ -31,10 +32,10 @@ export default {
     color rgb(172, 169, 169)
     font-size 13px
     float left
-    margin 5px 70px  
+    margin 5px 70px
   button
     float left
-    margin 5px 90px  
+    margin 5px 90px
     background-color #02a774
     color white
     border #02a774

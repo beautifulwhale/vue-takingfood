@@ -13,7 +13,10 @@
         <router-link to="/shop/info" replace>商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <!-- 缓存路由组件对象 -->
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -25,7 +28,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("getShopInfo");
-    this.$store.dispatch("getShopRatings");
   }
 };
 </script>

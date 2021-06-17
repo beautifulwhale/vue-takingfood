@@ -9,7 +9,8 @@ import {
   RECEIVE_GOODS,
   INCREASE_FOOD_COUNT,
   DECREASE_FOOD_COUNT,
-  CLEAR_CART
+  CLEAR_CART,
+  RECEIVE_SEARCH_SHOPS
 } from "./mutation-type.js";
 import {
   reqLocation,
@@ -20,6 +21,7 @@ import {
   reqShopInfo,
   reqShopGoods,
   reqShopRatings,
+  reqSearchShops
 } from "../api/index";
 export default {
   //异步获取地址
@@ -84,7 +86,7 @@ export default {
     if (result.code === 0) {
       const ratings = result.data;
       commit(RECEIVE_RATINGS, { ratings });
-      //数据更新了，通知一下组件 
+      //数据更新了，通知一下组件
       callback && callback();
     }
   },
@@ -101,15 +103,25 @@ export default {
   },
 
   //同步更新购物车食物的加减
-  updataFoodCount({commit},{isAdd,food}){
-    if(isAdd){
-      commit(INCREASE_FOOD_COUNT,{food})
-    }else{
-      commit(DECREASE_FOOD_COUNT,{food})
+  updataFoodCount({ commit }, { isAdd, food }) {
+    if (isAdd) {
+      commit(INCREASE_FOOD_COUNT, { food });
+    } else {
+      commit(DECREASE_FOOD_COUNT, { food });
     }
   },
   //同步清空购物车
-  clearCart({commit}){
+  clearCart({ commit }) {
     commit(CLEAR_CART);
+  },
+  //异步搜索商家
+  async searchShops({ commit, state }, keyword) {
+    const geohash = state.latitude + "," + state.longitude;
+    const result = await reqSearchShops(geohash, keyword);
+    console.log(result)
+    if (result.code === 0) {
+      const searchShops = result.data;
+      commit(RECEIVE_SEARCH_SHOPS, { searchShops });
+    }
   }
 };

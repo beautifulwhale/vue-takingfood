@@ -20,7 +20,7 @@ export const reqSearchShops = (geohash, keyword) => {
 // [5、获取一次性验证码](#5获取一次性验证码)<br/>
 // export const reqCaptcha = () => ajax(BASE_URL+'/captcha')
 // [6、用户名密码登陆](#6用户名密码登陆)<br/>
-export const reqLoginPwd = ({name, pwd, captcha}) =>
+export const reqLoginPwd = ({ name, pwd, captcha }) =>
   ajax(BASE_URL + "login_pwd", { name, pwd, captcha }, "POST");
 
 // [7、发送短信验证码](#7发送短信验证码)<br/>
@@ -33,19 +33,17 @@ export const reqUserInfo = () => ajax(BASE_URL + "/userinfo");
 // [10、用户登出](#10用户登出)<br/>
 export const reqLogOut = () => ajax(BASE_URL + "/logout");
 
-
 /**
  * 获取商家信息
  */
- export const reqShopInfo = () => ajax('/info')  //mock模拟数据不需要代理api
+export const reqShopInfo = () => ajax("/info"); //mock模拟数据不需要代理api
 
- /**
-  * 获取商家评价数组
-  */
- export const reqShopRatings = () => ajax('/ratings')
- 
- /**
-  * 获取商家商品数组
-  */
- export const reqShopGoods = () => ajax('/goods')
+/**
+ * 获取商家评价数组
+ */
+export const reqShopRatings = () => ajax("/ratings");
 
+/**
+ * 获取商家商品数组
+ */
+export const reqShopGoods = () => ajax("/goods");

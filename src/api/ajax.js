@@ -6,7 +6,7 @@ export default function ajax(url, data = {}, type = "GET") {
     let promise;
     if (type === "GET") {
       let dataStr = "";
-      //进行参数的拼接
+      // 进行参数的拼接
       // Object.keys(data).forEach(key => {
       //   dataStr += key + "=" + data[key] + "&";
       // });

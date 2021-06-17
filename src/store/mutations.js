@@ -10,7 +10,8 @@ import {
   RECEIVE_GOODS,
   INCREASE_FOOD_COUNT,
   DECREASE_FOOD_COUNT,
-  CLEAR_CART
+  CLEAR_CART,
+  RECEIVE_SEARCH_SHOPS
 } from "./mutation-type.js";
 export default {
   [RECEIVE_ADDRESS](state, { address }) {
@@ -62,5 +63,8 @@ export default {
     state.cartFoods.forEach(food => (food.count = 0));
     //2.清空购物车中的所有项目
     state.cartFoods = [];
-  }
+  },
+  [RECEIVE_SEARCH_SHOPS](state, { searchShops }) {
+    state.searchShops = searchShops;
+  },
 };
