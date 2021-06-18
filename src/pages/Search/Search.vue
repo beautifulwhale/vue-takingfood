@@ -18,7 +18,7 @@
         <!-- tag属性<a>标签将会成为真实的链接 (并且可以获取到正确的跳转)，但是激活的类将会被应用在外部的<li>标签上。
           a标签替换为li标签 -->
         <router-link
-          to="{path:'/shop', query:{id:item.id}}"
+          to="/shop/goods"
           tag="li"
           v-for="item in searchShops"
           :key="item.id"

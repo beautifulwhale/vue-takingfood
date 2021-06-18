@@ -15,7 +15,7 @@ export const reqShops = (longitude, latitude) =>
 
 // [4、根据经纬度和关键字搜索商铺列表](#4根据经纬度和关键字搜索商铺列表)<br/>
 export const reqSearchShops = (geohash, keyword) => {
-  ajax(BASE_URL + "/search_shops", { geohash, keyword });
+ return ajax(BASE_URL + "/search_shops", { geohash, keyword });
 };
 // [5、获取一次性验证码](#5获取一次性验证码)<br/>
 // export const reqCaptcha = () => ajax(BASE_URL+'/captcha')
