@@ -1,55 +1,62 @@
+<!--  -->
 <template>
-    <div>
-      <header class="header">
-      <a href="" class="header_title">
-        <slot name="left"></slot>
-        <span class="header_title_text" style="margin-left: 15px;">{{title}}</span>
-        <slot name="right"></slot>
-      </a>
-    </header>  
-    </div>
+  <header class="header">
+    <!-- 使用插槽获取内容 -->
+    <slot name="left"></slot> 
+    <span class="header_title">
+      <span class="header_title_text ellipsis">{{title}}</span>
+    </span>
+    <slot name="right"></slot>
+  </header>
 </template>
-
 
 <script>
 export default {
-    props:{
-        title:String
-    }
+  props: {
+    title: String
+  }
+
 }
+
 </script>
-
-<style lang="stylus" ref="stylesheet/stylus">
-.header
-  width 100%
-  height 40px
-  float left
-  background-color #02a774
-  // text-align center
-  .header_title
-    text-decoration none
-    color white
-    font-size 18px
-    .searcht
-      float left
-      margin 10px 10px
-    .header_title_text
-      float left
-      margin-top 13px
-      margin-left 45%
-    .header_title_text1
-      float left
-      font-size 12px
-      margin-top 18px
-      margin-left 15px
-      .iconfont
-        float left
-        margin-top -20px
-        margin-left 20px
+<style lang='stylus' rel='stylesheet/stylus' scoped>
+  .header
+    background-color #02a774
+    position fixed
+    z-index 100
+    left 0
+    top 0
+    width 100%
+    height 45px
+    .header_search
+      position absolute
+      left 15px
+      top 50%
+      transform translateY(-50%)
+      width 10%
+      height 50%
+      .icon-sousuo
+        font-size 25px
+        color #fff
+    .header_title
+      position absolute
+      top 50%
+      left 50%
+      transform translate(-50%, -50%)
+      width 50%
+      color #fff
+      text-align center
+      .header_title_text
         font-size 20px
+        color #fff
+        display block
+    .header_login
+      font-size 14px
+      color #fff
+      position absolute
+      right 15px
+      top 50%
+      transform translateY(-50%)
+      .header_login_text
+        color #fff
 </style>
-
-
-
-
-

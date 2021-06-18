@@ -1,7 +1,7 @@
 <template>
   <div class="profile">
     <HeaderTop title="我的"></HeaderTop>
-    <div class="login">
+    <div class="login" style='margin-top:40px'>
       <!-- 登录注册 -->
       <router-link
         :to="userInfo._id ? '/userinfo' : '/login'"

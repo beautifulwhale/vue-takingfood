@@ -2,19 +2,20 @@
   <div class="msite">
     <!-- 头部 -->
     <HeaderTop :title="address.name">
-      <router-link class="searcht" slot="left" to="/search"
-        ><i class="iconfont icon-search"></i
-      ></router-link>
+      <router-link class="header_search" slot="left" to="/search">
+        <i class="iconfont icon-search" style="color: #fff"></i>
+      </router-link>
       <router-link
-        class="header_title_text1"
-        style="color:white"
-        :to="userInfo._id ? '/userinfo' : 'login'"
+        class="header_login"
         slot="right"
+        :to="userInfo.id ? '/userInfo' : '/login'"
       >
-        <span v-if="!userInfo._id">登录/注册</span>
-        <span class="header_title_text1" style="margin-left:-10px" v-else
-          ><i class="iconfont icon-gerendenglu"></i
-        ></span>
+        <span class="header_login_text" v-if="!userInfo._id">
+          登录|注册
+        </span>
+        <span class="header_login_text" v-else>
+          <i class="iconfont icon-gerendenglu"></i>
+        </span>
       </router-link>
     </HeaderTop>
     <!-- 食品 -->
@@ -29,7 +30,7 @@
             v-for="(foodType, index) in foodTypes"
             :key="index"
             class="link_to_food"
-            @click='$router.push("/shop")'
+            @click="$router.push('/shop')"
           >
             <div class="food_container">
               <img :src="baseImgUrl + foodType.image_url" />
@@ -116,7 +117,7 @@ export default {
 .swiper-container {
       width: 100%;
       height: 100%;
-
+      margin-top 50px
       .swiper-wrapper {
         width: 100%;
         height: 100%;
